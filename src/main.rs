@@ -8,20 +8,15 @@ fn repl() {
     print!("# ");
     stdout().flush().ok();
     let mut input = String::new();
-    match stdin().read_to_string(&mut input) {
-        Ok(n) => {
-            if n <= 0 {
-                break
+    stdin().read_to_string(&mut input);
+    match parser::parse_Toplevel(input.as_str()) {
+        Ok(parsed) => {
+            match eval::evaluate(parsed) {
+                Ok(result) => println!("{:?}", result),
+                Err(err) => println!("error: {:?}", err)
             }
-        }
-        Err(e) => {
-            println!("error: {}", e);
-        }
-    }
-    let parsed = parser::parse_Toplevel(input.as_str()).ok().unwrap();
-    match eval::evaluate(parsed) {
-        Ok(result) => println!("{:?}", result),
-        Err(err) => println!("error: {:?}", err)
+        },
+        Err(e) => println!("error: {:?}", e)
     }
 }
 
