@@ -1,0 +1,6 @@
+[package]
+name = "shikinyan"
+version = "0.1.0"
+authors = ["utgwkk <utagawakiki@gmail.com>"]
+
+[dependencies]
