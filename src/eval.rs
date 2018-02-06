@@ -49,3 +49,51 @@ pub fn evaluate (exp: Expr) -> Result<Value, &'static str> {
         },
     }
 }
+
+#[test]
+fn test_1_plus_1_is_2() {
+    let ast = Plus(Box::new(Int(1)), Box::new(Int(1)));
+    assert_eq!(Ok(IntV(2)), evaluate(ast));
+}
+
+#[test]
+fn test_2_times_3_is_6() {
+    let ast = Mult(Box::new(Int(2)), Box::new(Int(3)));
+    assert_eq!(Ok(IntV(6)), evaluate(ast));
+}
+
+#[test]
+fn test_1_lt_2_is_true() {
+    let ast = Lt(Box::new(Int(1)), Box::new(Int(2)));
+    assert_eq!(Ok(BoolV(true)), evaluate(ast));
+}
+
+#[test]
+fn test_3_lt_2_is_false() {
+    let ast = Lt(Box::new(Int(3)), Box::new(Int(2)));
+    assert_eq!(Ok(BoolV(false)), evaluate(ast));
+}
+
+#[test]
+fn test_true() {
+    let ast = Bool(true);
+    assert_eq!(Ok(BoolV(true)), evaluate(ast));
+}
+
+#[test]
+fn test_false() {
+    let ast = Bool(false);
+    assert_eq!(Ok(BoolV(false)), evaluate(ast));
+}
+
+#[test]
+fn test_if_true_then_2_else_3() {
+    let ast = If(Box::new(Bool(true)), Box::new(Int(2)), Box::new(Int(3)));
+    assert_eq!(Ok(IntV(2)), evaluate(ast));
+}
+
+#[test]
+fn test_if_false_then_2_else_3() {
+    let ast = If(Box::new(Bool(false)), Box::new(Int(2)), Box::new(Int(3)));
+    assert_eq!(Ok(IntV(3)), evaluate(ast));
+}
