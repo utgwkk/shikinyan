@@ -1,10 +1,45 @@
 use std::str::FromStr;
+use syntax::Expr;
+use syntax::Expr::*;
 
 grammar;
 
-pub Term: i32 = {
-    <n:Num> => n,
-    "(" <t:Term> ")" => t,
+pub Toplevel: Expr = {
+    <e:Exp> ";;" => e,
 };
 
-Num: i32 = <s:r"[0-9]+"> => i32::from_str(s).unwrap();
+Exp: Expr = {
+    <e:IfExp> => e,
+    <e:LtExp> => e,
+};
+
+IfExp: Expr = {
+    "if" <e1:Exp> "then" <e2:Exp> "else" <e3:Exp> => If(Box::new(e1), Box::new(e2), Box::new(e3)),
+};
+
+LtExp: Expr = {
+    <e1:PExp> "<" <e2:PExp> => Lt(Box::new(e1), Box::new(e2)),
+    <e:PExp> => e,
+};
+
+PExp: Expr = {
+    <e1:PExp> "+" <e2:MExp> => Plus(Box::new(e1), Box::new(e2)),
+    <e:MExp> => e,
+};
+
+MExp: Expr = {
+    <e1:MExp> "*" <e2:AExp> => Mult(Box::new(e1), Box::new(e2)),
+    <e:AExp> => e,
+};
+
+AExp: Expr = {
+    <n:Num> => Int(n),
+    <s:Id> => Var(s),
+    "true" => Bool(true),
+    "false" => Bool(false),
+    "(" <e:Exp> ")" => e,
+};
+
+Num: i64 = <s:r"-?[0-9]+"> => i64::from_str(s).unwrap();
+
+Id: String =<s:r"[a-z]+"> => String::from(s);
